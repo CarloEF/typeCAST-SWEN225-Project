@@ -61,7 +61,7 @@ public class Board {
 			
 			switch(room) {
 				case 'i':
-					tile = new InaccessibleTile(up, down, left, right, x, y);
+					tile = new InaccessibleTile(x, y);
 					break;
 				case 'h':
 					tile = new HallwayTile(up, down, left, right, x, y);
@@ -113,6 +113,7 @@ public class Board {
 	 * @return
 	 */
 	public boolean isValidMove(int diceRoll, Player player, int newX, int newY) {
+		//TODO
 		return true;
 	}
 	
@@ -124,6 +125,7 @@ public class Board {
 	 * @return
 	 */
 	public boolean isValidMove(int diceRoll, Player player, Room room) {
+		//TODO
 		return true;
 	}
 	

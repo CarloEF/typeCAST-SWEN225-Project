@@ -1,9 +1,19 @@
 package swen225.cluedo;
 
+/**
+ * 
+ * 
+ *
+ */
 public class InaccessibleTile extends Tile {
-
-	public InaccessibleTile(boolean up, boolean down, boolean left, boolean right, int x, int y) {
-		super(up, down, left, right, x, y);
+	
+	/**
+	 * Inaccessible tiles always have all 4 walls since you can't get to them
+	 * @param x
+	 * @param y
+	 */
+	public InaccessibleTile(int x, int y) {
+		super(true, true, true, true, x, y);
 		
 		
 	}
