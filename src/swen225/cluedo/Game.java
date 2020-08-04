@@ -255,12 +255,12 @@ public class Game {
 	 * Sets the players at their starting positions
 	 */
 	private void setPlayerTiles() {
-		players.get("Miss Scarlett").setTile(board.getTile(7, 24));
-		players.get("Col. Mustard").setTile(board.getTile(0, 17));
-		players.get("Mrs. White").setTile(board.getTile(9, 0));
-		players.get("Mr. Green").setTile(board.getTile(14, 0));
-		players.get("Mrs. Peacock").setTile(board.getTile(23, 6));
-		players.get("Prof. Plum").setTile(board.getTile(23, 19));
+		players.get("Miss Scarlett").moveToTile(board.getTile(7, 24));
+		players.get("Col. Mustard").moveToTile(board.getTile(0, 17));
+		players.get("Mrs. White").moveToTile(board.getTile(9, 0));
+		players.get("Mr. Green").moveToTile(board.getTile(14, 0));
+		players.get("Mrs. Peacock").moveToTile(board.getTile(23, 6));
+		players.get("Prof. Plum").moveToTile(board.getTile(23, 19));
 	}
 	
 	/**
@@ -385,9 +385,21 @@ public class Game {
 		newX--;
 		newY = BOARD_HEIGHT - newY;
 		
-		System.out.println(board.isValidMove(stepNum, player, newX, newY));
+		boolean validMove = board.isValidMove(stepNum, player, newX, newY);
 		
+		while (!validMove) {
+			System.out.println("Invalid move (give in pairs of coords or room name):");
+			
+			newX = input.nextInt();
+			newY = input.nextInt();
+			
+			newX--;
+			newY = BOARD_HEIGHT - newY;
+			
+			validMove = board.isValidMove(stepNum, player, newX, newY);
+		}
 		
+		board.movePlayer(player, newX, newY);
 		
 	}
 	

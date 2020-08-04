@@ -18,6 +18,10 @@ public class InaccessibleTile extends Tile {
 		
 	}
 	
+	public boolean isAccessible() {
+		return false;
+	}
+	
 	public String toString() {
 		return " ";
 	}

@@ -2,7 +2,7 @@ package swen225.cluedo;
 
 public class RoomTile extends Tile {
 	
-	Room room;
+	private Room room;
 	
 	/**
 	 * 

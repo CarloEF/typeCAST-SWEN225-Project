@@ -12,6 +12,7 @@ public class Weapon implements CluedoObject {
 	 */
 	public Weapon(String name) {
 		this.name = name;
+		this.tile = null;
 	}
 	
 	/**
@@ -27,8 +28,16 @@ public class Weapon implements CluedoObject {
 	
 	/**
 	 * 
+	 * @param room - the room to move to
 	 */
 	public void moveToRoom(Room room) {
-		//TODO
+		Tile newTile = room.getFreeTile();
+		
+		if (tile != null) {
+			tile.setObject(null);
+		}
+		
+		newTile.setObject(this);
+		tile = newTile;
 	}
 }

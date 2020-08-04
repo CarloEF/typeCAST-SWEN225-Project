@@ -18,6 +18,18 @@ public class Room implements Card {
 		exitTiles = new HashSet<Tile>();
 	}
 	
+	/**
+	 * Gets a tile from this room that is free
+	 * @return
+	 */
+	public Tile getFreeTile() {
+		int index = 0;
+		do {
+			index = (int)Math.floor(Math.random()*tiles.size());
+		} while (tiles.get(index).hasObject());
+		return tiles.get(index);
+	}
+	
 	public void addExitTile(Tile tile) {
 		exitTiles.add(tile);
 	}

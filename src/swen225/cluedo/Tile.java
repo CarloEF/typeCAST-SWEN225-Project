@@ -27,6 +27,10 @@ public abstract class Tile {
 		object = newObject;
 	}
 	
+	public boolean hasObject() {
+		return object != null;
+	}
+	
 	public boolean hasUpWall() {
 		return upWall;
 	}
@@ -49,6 +53,10 @@ public abstract class Tile {
 	
 	public int getY() {
 		return y;
+	}
+	
+	public boolean isAccessible() {
+		return object == null;
 	}
 	
 	public abstract String toString();

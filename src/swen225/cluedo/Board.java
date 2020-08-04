@@ -23,6 +23,16 @@ public class Board {
 	
 	/**
 	 * 
+	 * @param player
+	 * @param newX
+	 * @param newY
+	 */
+	public void movePlayer(Player player, int newX, int newY) {
+		
+	}
+	
+	/**
+	 * 
 	 * @param roomText - text representing the tiles
 	 * @param wallText - bitfield text representing the walls on the tiles
 	 * @param rooms - a map containing the rooms
@@ -105,15 +115,15 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param diceRoll
-	 * @param player
-	 * @param newX
-	 * @param newY
+	 * Checks if a move is valid
+	 * @param diceRoll - the number of moves to use, determined by a dice roll
+	 * @param player - the player to move
+	 * @param newX - the new x position to move to
+	 * @param newY - the new y position to move to
 	 * @return
 	 */
 	public boolean isValidMove(int diceRoll, Player player, int newX, int newY) {
-		//first attempt at this
+		
 		Tile playerTile = player.getTile();
 		
 		Tile targetTile = getTile(newX, newY);
@@ -126,10 +136,10 @@ public class Board {
 	}
 	
 	/**
-	 * Recursive method to determine whether moves are valid
-	 * @param moveNum
-	 * @param diceRoll
-	 * @param visited
+	 * Recursive method to determine whether move is valid
+	 * @param moveNum - number of moves used so far
+	 * @param diceRoll - the number of moves to use, determined by a dice roll
+	 * @param visited - a stack of tiles already visited
 	 * @return
 	 */
 	private boolean validMove(int moveNum, int diceRoll, Stack<Tile> visited, Tile targetTile) {
@@ -213,15 +223,105 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param diceRoll
-	 * @param player
-	 * @param room
+	 * Checks if a move to a room is valid
+	 * @param diceRoll - the number of moves that can be used
+	 * @param player - the player to move
+	 * @param targetRoom - the room to move to
 	 * @return
 	 */
-	public boolean isValidMove(int diceRoll, Player player, Room room) {
-		//TODO
-		return true;
+	public boolean isValidMove(int diceRoll, Player player, Room targetRoom) {
+		Tile playerTile = player.getTile();
+		
+		Stack<Tile> visitedTiles = new Stack<Tile>();
+
+		visitedTiles.add(playerTile);
+		
+		return validMove(0, diceRoll, visitedTiles, targetRoom);
+	}
+	
+	/**
+	 * Recursive method to determine whether a move to a room is valid
+	 * @param moveNum
+	 * @param diceRoll
+	 * @param visited
+	 * @return
+	 */
+	private boolean validMove(int moveNum, int diceRoll, Stack<Tile> visited, Room targetRoom) {
+		Tile lastTile = visited.peek();
+		
+		//can get to a room early with extra moves to spare
+		if (lastTile instanceof RoomTile) {
+			if (((RoomTile)lastTile).getRoom() == targetRoom) {
+				return true;
+			}
+		}
+		
+		//used all the moves
+		if (moveNum == diceRoll) {
+			return false;
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getY() > 0 && !lastTile.hasUpWall()) {
+			Tile upperTile = getTile(lastTile.getX(), lastTile.getY()-1);
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(upperTile instanceof InaccessibleTile) && !visited.contains(upperTile)) {
+				visited.add(upperTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getY() < height-1 && !lastTile.hasDownWall()) {
+			Tile lowerTile = getTile(lastTile.getX(), lastTile.getY()+1);
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(lowerTile instanceof InaccessibleTile) && !visited.contains(lowerTile)) {
+				visited.add(lowerTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getX() > 0 && !lastTile.hasLeftWall()) {
+			Tile leftTile = getTile(lastTile.getX()-1, lastTile.getY());
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(leftTile instanceof InaccessibleTile) && !visited.contains(leftTile)) {
+				visited.add(leftTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getX() < width-1 && !lastTile.hasRightWall()) {
+			Tile rightTile = getTile(lastTile.getX()+1, lastTile.getY());
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(rightTile instanceof InaccessibleTile) && !visited.contains(rightTile)) {
+				visited.add(rightTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
