@@ -33,60 +33,60 @@ public class Game {
 	//a = hall
 	//s = study
 	//o = lounge
-	static final String ROOM_BOARD = "iiiiiiiiihiiiihiiiiiiiii" + 
-									 "kkkkkkihhhbbbbhhhicccccc" + 
-									 "kkkkkkhhbbbbbbbbhhcccccc" + 
-									 "kkkkkkhhbbbbbbbbhhcccccc" + 
-									 "kkkkkkhhbbbbbbbbhhcccccc" + 
-									 "kkkkkkhhbbbbbbbbhhhcccci" +
-									 "ikkkkkhhbbbbbbbbhhhhhhhh" +
-									 "hhhhhhhhbbbbbbbbhhhhhhhi" +
-									 "ihhhhhhhhhhhhhhhhhmmmmmm" +
-									 "dddddhhhhhhhhhhhhhmmmmmm" +
-									 "ddddddddhhiiiiihhhmmmmmm" +
-									 "ddddddddhhiiiiihhhmmmmmm" + 
-									 "ddddddddhhiiiiihhhmmmmmm" + 
-									 "ddddddddhhiiiiihhhhhhhhi" +
-									 "ddddddddhhiiiiihhhllllli" +
-									 "ddddddddhhiiiiihhlllllll" +
-									 "ihhhhhhhhhiiiiihhlllllll" +
-									 "hhhhhhhhhhhhhhhhhlllllll" +
-									 "ihhhhhhhhaaaaaahhhllllli" +
-									 "ooooooohhaaaaaahhhhhhhhh" +
-									 "ooooooohhaaaaaahhhhhhhhi" +
-									 "ooooooohhaaaaaahhsssssss" + 
-									 "ooooooohhaaaaaahhsssssss" + 
-									 "ooooooohhaaaaaahhsssssss" + 
-									 "ooooooihiaaaaaaihissssss";
+	public static final String ROOM_BOARD = "iiiiiiiiihiiiihiiiiiiiii" + 
+									 		"kkkkkkihhhbbbbhhhicccccc" + 
+									 		"kkkkkkhhbbbbbbbbhhcccccc" + 
+									 		"kkkkkkhhbbbbbbbbhhcccccc" + 
+											"kkkkkkhhbbbbbbbbhhcccccc" + 
+											"kkkkkkhhbbbbbbbbhhhcccci" +
+											"ikkkkkhhbbbbbbbbhhhhhhhh" +
+											"hhhhhhhhbbbbbbbbhhhhhhhi" +
+											"ihhhhhhhhhhhhhhhhhmmmmmm" +
+											"dddddhhhhhhhhhhhhhmmmmmm" +
+											"ddddddddhhiiiiihhhmmmmmm" +
+											"ddddddddhhiiiiihhhmmmmmm" + 
+											"ddddddddhhiiiiihhhmmmmmm" + 
+											"ddddddddhhiiiiihhhhhhhhi" +
+											"ddddddddhhiiiiihhhllllli" +
+											"ddddddddhhiiiiihhlllllll" +
+											"ihhhhhhhhhiiiiihhlllllll" +
+											"hhhhhhhhhhhhhhhhhlllllll" +
+											"ihhhhhhhhaaaaaahhhllllli" +
+											"ooooooohhaaaaaahhhhhhhhh" +
+											"ooooooohhaaaaaahhhhhhhhi" +
+											"ooooooohhaaaaaahhsssssss" + 
+											"ooooooohhaaaaaahhsssssss" + 
+											"ooooooohhaaaaaahhsssssss" + 
+											"ooooooihiaaaaaaihissssss";
 	
 	//bitwise flag for walls with / as delimiter
 	//1 for left, 2 for up, 4 for right, 8 for down
 	//convention is walls are on both tiles they are connected to
-	static final String WALL_BOARD = "0/0/0/0/0/0/0/0/0/7/0/0/0/0/7/0/0/0/0/0/0/0/0/0/" + 
-									 "3/2/2/2/2/6/0/3/10/12/3/2/2/6/9/10/6/0/3/2/2/2/2/6/" +
-									 "1/0/0/0/0/4/3/4/3/2/0/0/0/0/2/6/1/6/1/0/0/0/0/4/" +
-									 "1/0/0/0/0/4/1/4/1/0/0/0/0/0/0/4/1/4/1/0/0/0/0/4/" +
-									 "1/0/0/0/0/4/1/4/1/0/0/0/0/0/0/4/1/4/1/0/0/0/0/12/" +
-									 "9/0/0/0/0/4/1/0/0/0/0/0/0/0/0/0/0/0/4/9/8/8/12/0/" +
-									 "0/9/8/8/0/12/1/4/1/0/0/0/0/0/0/4/1/0/0/2/2/2/2/14/" +
-									 "11/2/2/2/0/2/0/4/9/0/8/8/8/8/0/12/1/0/8/8/8/8/12/0/" +
-									 "0/9/8/8/8/0/0/0/2/0/2/2/2/2/0/2/0/4/3/2/2/2/2/6/" +
-									 "3/2/2/2/6/9/8/8/0/0/8/8/8/8/8/0/0/0/0/0/0/0/0/4/" +
-									 "1/0/0/0/0/2/2/6/1/4/3/2/2/2/6/1/0/4/1/0/0/0/0/4/" +
-									 "1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/4/1/0/0/0/0/4/" +
-									 "1/0/0/0/0/0/0/0/0/4/1/0/0/0/4/1/0/4/9/8/8/8/0/12/" +
-									 "1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/0/10/10/2/10/12/0/" +
-									 "1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/12/3/2/0/2/6/0/" +
-									 "9/8/8/8/8/8/0/12/1/4/1/0/0/0/4/1/4/3/0/0/0/0/0/6/" +
-									 "0/3/2/2/2/2/0/2/0/4/9/8/8/8/12/1/0/0/0/0/0/0/0/4/" +
-									 "11/0/0/0/0/0/0/0/0/8/10/2/2/10/10/0/4/9/0/0/0/0/0/12/" +
-									 "0/9/8/8/8/8/0/0/4/3/2/0/0/2/6/1/0/6/9/8/8/8/12/0/" +
-									 "3/2/2/2/2/2/4/1/4/1/0/0/0/0/4/1/0/0/2/2/2/2/2/14/" +
-									 "1/0/0/0/0/0/4/1/4/1/0/0/0/0/0/0/0/0/8/8/8/8/12/0/" +
-									 "1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/2/2/2/2/2/6/" +
-									 "1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/0/0/0/0/0/4/" + 
-									 "1/0/0/0/0/0/12/1/12/1/0/0/0/0/4/9/4/9/0/0/0/0/0/4/" +
-									 "9/8/8/8/8/12/0/13/0/9/8/8/8/8/12/0/13/0/9/8/8/8/8/9/";
+	public static final String WALL_BOARD = "0/0/0/0/0/0/0/0/0/7/0/0/0/0/7/0/0/0/0/0/0/0/0/0/" + 
+											"3/2/2/2/2/6/0/3/10/12/3/2/2/6/9/10/6/0/3/2/2/2/2/6/" +
+											"1/0/0/0/0/4/3/4/3/2/0/0/0/0/2/6/1/6/1/0/0/0/0/4/" +
+											"1/0/0/0/0/4/1/4/1/0/0/0/0/0/0/4/1/4/1/0/0/0/0/4/" +
+											"1/0/0/0/0/4/1/4/1/0/0/0/0/0/0/4/1/4/1/0/0/0/0/12/" +
+											"9/0/0/0/0/4/1/0/0/0/0/0/0/0/0/0/0/0/4/9/8/8/12/0/" +
+											"0/9/8/8/0/12/1/4/1/0/0/0/0/0/0/4/1/0/0/2/2/2/2/14/" +
+											"11/2/2/2/0/2/0/4/9/0/8/8/8/8/0/12/1/0/8/8/8/8/12/0/" +
+											"0/9/8/8/8/0/0/0/2/0/2/2/2/2/0/2/0/4/3/2/2/2/2/6/" +
+											"3/2/2/2/6/9/8/8/0/0/8/8/8/8/8/0/0/0/0/0/0/0/0/4/" +
+											"1/0/0/0/0/2/2/6/1/4/3/2/2/2/6/1/0/4/1/0/0/0/0/4/" +
+											"1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/4/1/0/0/0/0/4/" +
+											"1/0/0/0/0/0/0/0/0/4/1/0/0/0/4/1/0/4/9/8/8/8/0/12/" +
+											"1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/0/10/10/2/10/12/0/" +
+											"1/0/0/0/0/0/0/4/1/4/1/0/0/0/4/1/0/12/3/2/0/2/6/0/" +
+											"9/8/8/8/8/8/0/12/1/4/1/0/0/0/4/1/4/3/0/0/0/0/0/6/" +
+											"0/3/2/2/2/2/0/2/0/4/9/8/8/8/12/1/0/0/0/0/0/0/0/4/" +
+											"11/0/0/0/0/0/0/0/0/8/10/2/2/10/10/0/4/9/0/0/0/0/0/12/" +
+											"0/9/8/8/8/8/0/0/4/3/2/0/0/2/6/1/0/6/9/8/8/8/12/0/" +
+											"3/2/2/2/2/2/4/1/4/1/0/0/0/0/4/1/0/0/2/2/2/2/2/14/" +
+											"1/0/0/0/0/0/4/1/4/1/0/0/0/0/0/0/0/0/8/8/8/8/12/0/" +
+											"1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/2/2/2/2/2/6/" +
+											"1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/0/0/0/0/0/4/" + 
+											"1/0/0/0/0/0/12/1/12/1/0/0/0/0/4/9/4/9/0/0/0/0/0/4/" +
+											"9/8/8/8/8/12/0/13/0/9/8/8/8/8/12/0/13/0/9/8/8/8/8/9/";
 	
 	//stores the number of players
 	int playerNum;
@@ -135,7 +135,6 @@ public class Game {
 	 */
 	private void initBoard() {
 		board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
-		
 		
 		board.setBoard(ROOM_BOARD, WALL_BOARD, rooms);
 	}
@@ -255,7 +254,7 @@ public class Game {
 	/**
 	 * Sets the players at their starting positions
 	 */
-	public void setPlayerTiles() {
+	private void setPlayerTiles() {
 		players.get("Miss Scarlett").setTile(board.getTile(7, 24));
 		players.get("Col. Mustard").setTile(board.getTile(0, 17));
 		players.get("Mrs. White").setTile(board.getTile(9, 0));
@@ -345,6 +344,7 @@ public class Game {
 		
 		System.out.println("How many players are playing?");
 		
+		//TODO catch potential errors on input
 		int num = input.nextInt();
 		
 		while (num < 3 || num > 6) {
@@ -372,13 +372,20 @@ public class Game {
 		
 		int stepNum = step1 + step2;
 		
-		System.out.printf("You rolled a %d and a %d, giving a total of %d\n", step1, step2, stepNum);
+		int playerX = player.getTile().getX()+1;
+		int playerY = BOARD_HEIGHT - player.getTile().getY();
 		
+		System.out.printf("You rolled a %d and a %d, giving a total of %d\n", step1, step2, stepNum);
+		System.out.printf("You are at (%d, %d)\n", playerX, playerY);
 		System.out.println("Where do you want to move(give in pairs of coords or room name):");
 		
-		String move = input.next();
-		//validate this
+		int newX = input.nextInt();
+		int newY = input.nextInt();
 		
+		newX--;
+		newY = BOARD_HEIGHT - newY;
+		
+		System.out.println(board.isValidMove(stepNum, player, newX, newY));
 		
 		
 		

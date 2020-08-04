@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Room implements Card {
-	private List<Weapon> weapons;
-	private List<Character> players;
-	
 	private List<RoomTile> tiles;
 	
 	private Set<Tile> exitTiles;

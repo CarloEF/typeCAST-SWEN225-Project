@@ -1,8 +1,8 @@
 package swen225.cluedo;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Board {
 	Tile[][] board;
@@ -113,8 +113,103 @@ public class Board {
 	 * @return
 	 */
 	public boolean isValidMove(int diceRoll, Player player, int newX, int newY) {
-		//TODO
-		return true;
+		//first attempt at this
+		Tile playerTile = player.getTile();
+		
+		Tile targetTile = getTile(newX, newY);
+		
+		Stack<Tile> visitedTiles = new Stack<Tile>();
+
+		visitedTiles.add(playerTile);
+		
+		return validMove(0, diceRoll, visitedTiles, targetTile);
+	}
+	
+	/**
+	 * Recursive method to determine whether moves are valid
+	 * @param moveNum
+	 * @param diceRoll
+	 * @param visited
+	 * @return
+	 */
+	private boolean validMove(int moveNum, int diceRoll, Stack<Tile> visited, Tile targetTile) {
+		Tile lastTile = visited.peek();
+		
+		if (moveNum == diceRoll) {
+			//could be equals
+			if (lastTile == targetTile) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		//terminate if player moves to targetTile early
+		if (lastTile == targetTile) {
+			return false;
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getY() > 0 && !lastTile.hasUpWall()) {
+			Tile upperTile = getTile(lastTile.getX(), lastTile.getY()-1);
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(upperTile instanceof InaccessibleTile) && !visited.contains(upperTile)) {
+				visited.add(upperTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getY() < height-1 && !lastTile.hasDownWall()) {
+			Tile lowerTile = getTile(lastTile.getX(), lastTile.getY()+1);
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(lowerTile instanceof InaccessibleTile) && !visited.contains(lowerTile)) {
+				visited.add(lowerTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getX() > 0 && !lastTile.hasLeftWall()) {
+			Tile leftTile = getTile(lastTile.getX()-1, lastTile.getY());
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(leftTile instanceof InaccessibleTile) && !visited.contains(leftTile)) {
+				visited.add(leftTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		//can't go to invalid tiles or through walls
+		if (lastTile.getX() < width-1 && !lastTile.hasRightWall()) {
+			Tile rightTile = getTile(lastTile.getX()+1, lastTile.getY());
+			
+			//can't access inaccessible tiles or already visited tiles
+			if (!(rightTile instanceof InaccessibleTile) && !visited.contains(rightTile)) {
+				visited.add(rightTile);
+				
+				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
+					return true;
+				}
+				visited.pop();
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -156,7 +251,7 @@ public class Board {
 			text += "\n";
 		}
 		
-		text += " ";
+		text += "   ";
 		//add numbers on the bottom
 		for (int i=0;i<width;i++) {
 			if (i+1 < 10) {
@@ -165,7 +260,7 @@ public class Board {
 				text += (int)Math.floor((i+1)/10.0);
 			}
 		}
-		text += "\n ";
+		text += "\n   ";
 		for (int i=0;i<width;i++) {
 			if (i+1 < 10) {
 				text += " ";
