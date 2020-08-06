@@ -10,6 +10,7 @@ public class Board {
 	int height;
 	
 	/**
+	 * Constructs the board
 	 * 
 	 * @param width of the board
 	 * @param height of the board
@@ -22,13 +23,25 @@ public class Board {
 	}
 	
 	/**
+	 * Moves a player to a tile, assumes all checks have been done
 	 * 
 	 * @param player
 	 * @param newX
 	 * @param newY
 	 */
 	public void movePlayer(Player player, int newX, int newY) {
+		Tile newTile = getTile(newX, newY);
 		
+		player.moveToTile(newTile);
+	}
+	
+	/**
+	 * Moves a player to a room
+	 * @param player
+	 * @param newRoom
+	 */
+	public void movePlayer(Player player, Room newRoom) {
+		player.moveToRoom(newRoom);
 	}
 	
 	/**
@@ -129,8 +142,16 @@ public class Board {
 		Tile targetTile = getTile(newX, newY);
 		
 		Stack<Tile> visitedTiles = new Stack<Tile>();
-
-		visitedTiles.add(playerTile);
+		
+		//if player is in a room, they can leave from any of the exits
+		if (playerTile instanceof RoomTile) {
+			
+			Room room = ((RoomTile)playerTile).getRoom();
+			
+			visitedTiles.addAll(room.getExitTiles());
+		} else {
+			visitedTiles.add(playerTile);
+		}
 		
 		return validMove(0, diceRoll, visitedTiles, targetTile);
 	}
@@ -164,7 +185,8 @@ public class Board {
 			Tile upperTile = getTile(lastTile.getX(), lastTile.getY()-1);
 			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(upperTile instanceof InaccessibleTile) && !visited.contains(upperTile)) {
+			//also can't go through room tiles
+			if (upperTile.isAccessible() && !visited.contains(upperTile)) {
 				visited.add(upperTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
@@ -179,7 +201,7 @@ public class Board {
 			Tile lowerTile = getTile(lastTile.getX(), lastTile.getY()+1);
 			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(lowerTile instanceof InaccessibleTile) && !visited.contains(lowerTile)) {
+			if (lowerTile.isAccessible() && !visited.contains(lowerTile)) {
 				visited.add(lowerTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
@@ -194,7 +216,7 @@ public class Board {
 			Tile leftTile = getTile(lastTile.getX()-1, lastTile.getY());
 			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(leftTile instanceof InaccessibleTile) && !visited.contains(leftTile)) {
+			if (leftTile.isAccessible() && !visited.contains(leftTile)) {
 				visited.add(leftTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
@@ -209,7 +231,7 @@ public class Board {
 			Tile rightTile = getTile(lastTile.getX()+1, lastTile.getY());
 			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(rightTile instanceof InaccessibleTile) && !visited.contains(rightTile)) {
+			if (rightTile.isAccessible() && !visited.contains(rightTile)) {
 				visited.add(rightTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetTile)) {
@@ -233,8 +255,21 @@ public class Board {
 		Tile playerTile = player.getTile();
 		
 		Stack<Tile> visitedTiles = new Stack<Tile>();
-
-		visitedTiles.add(playerTile);
+		
+		//if player is in a room, they can leave from any of the exits
+		if (playerTile instanceof RoomTile) {
+			
+			Room room = ((RoomTile)playerTile).getRoom();
+			
+			//can't stay in room
+			if (room == targetRoom) {
+				return false;
+			}
+			
+			visitedTiles.addAll(room.getExitTiles());
+		} else {
+			visitedTiles.add(playerTile);
+		}
 		
 		return validMove(0, diceRoll, visitedTiles, targetRoom);
 	}
@@ -249,13 +284,6 @@ public class Board {
 	private boolean validMove(int moveNum, int diceRoll, Stack<Tile> visited, Room targetRoom) {
 		Tile lastTile = visited.peek();
 		
-		//can get to a room early with extra moves to spare
-		if (lastTile instanceof RoomTile) {
-			if (((RoomTile)lastTile).getRoom() == targetRoom) {
-				return true;
-			}
-		}
-		
 		//used all the moves
 		if (moveNum == diceRoll) {
 			return false;
@@ -265,8 +293,16 @@ public class Board {
 		if (lastTile.getY() > 0 && !lastTile.hasUpWall()) {
 			Tile upperTile = getTile(lastTile.getX(), lastTile.getY()-1);
 			
+			//can get to a room early with extra moves to spare
+			if (upperTile instanceof RoomTile) {
+				if (((RoomTile)upperTile).getRoom() == targetRoom) {
+					return true;
+				}
+			}
+			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(upperTile instanceof InaccessibleTile) && !visited.contains(upperTile)) {
+			if (upperTile.isAccessible() && !visited.contains(upperTile)) {
+				
 				visited.add(upperTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
@@ -280,8 +316,16 @@ public class Board {
 		if (lastTile.getY() < height-1 && !lastTile.hasDownWall()) {
 			Tile lowerTile = getTile(lastTile.getX(), lastTile.getY()+1);
 			
+			//can get to a room early with extra moves to spare
+			if (lowerTile instanceof RoomTile) {
+				if (((RoomTile)lowerTile).getRoom() == targetRoom) {
+					return true;
+				}
+			}
+			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(lowerTile instanceof InaccessibleTile) && !visited.contains(lowerTile)) {
+			if (lowerTile.isAccessible() && !visited.contains(lowerTile)) {
+				
 				visited.add(lowerTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
@@ -295,8 +339,15 @@ public class Board {
 		if (lastTile.getX() > 0 && !lastTile.hasLeftWall()) {
 			Tile leftTile = getTile(lastTile.getX()-1, lastTile.getY());
 			
+			//can get to a room early with extra moves to spare
+			if (leftTile instanceof RoomTile) {
+				if (((RoomTile)leftTile).getRoom() == targetRoom) {
+					return true;
+				}
+			}
+			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(leftTile instanceof InaccessibleTile) && !visited.contains(leftTile)) {
+			if (leftTile.isAccessible() && !visited.contains(leftTile)) {
 				visited.add(leftTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
@@ -310,8 +361,15 @@ public class Board {
 		if (lastTile.getX() < width-1 && !lastTile.hasRightWall()) {
 			Tile rightTile = getTile(lastTile.getX()+1, lastTile.getY());
 			
+			//can get to a room early with extra moves to spare
+			if (rightTile instanceof RoomTile) {
+				if (((RoomTile)rightTile).getRoom() == targetRoom) {
+					return true;
+				}
+			}
+			
 			//can't access inaccessible tiles or already visited tiles
-			if (!(rightTile instanceof InaccessibleTile) && !visited.contains(rightTile)) {
+			if (rightTile.isAccessible() && !visited.contains(rightTile)) {
 				visited.add(rightTile);
 				
 				if (validMove(moveNum+1, diceRoll, visited, targetRoom)) {
@@ -335,37 +393,67 @@ public class Board {
 	}
 	
 	/**
-	 * 
+	 * Draws the board
 	 */
 	public String toString() {
+		//string that contains the board
 		String text = "";
 		for (int y=0;y<height;y++) {
+			//adds horizontal wall
+			text += "    ";
+			for (int x=0;x<width;x++) {
+				if (board[x][y].hasUpWall()) {
+					text += "—";
+				} else {
+					text += " ";
+				}
+				
+				text += " ";
+			}
+			text += "\n";
+			
+			//add y coords on left
 			text += (height-y);
 			if (height-y < 10) {
 				text += " ";
 			}
 			text += " ";
+			//adds walls in between tiles
 			for (int x=0;x<width;x++) {
+				if (board[x][y].hasLeftWall()) {
+					text += "|";
+				} else {
+					text += " ";
+				}
 				text += board[x][y];
+			}
+			//adds the walls on the right if they are there
+			if (board[width-1][y].hasRightWall()) {
+				text += "|";
 			}
 			text += "\n";
 		}
 		
-		text += "   ";
+		//adds the walls on the bottom
+		text += "    ";
+		for (int x=0;x<width;x++) {
+			if (board[x][height-1].hasDownWall()) {
+				text += "—";
+			} else {
+				text += " ";
+			}
+			text += " ";
+		}
+		
+		text += "\n";
+		
+		text += "    ";
 		//add numbers on the bottom
 		for (int i=0;i<width;i++) {
 			if (i+1 < 10) {
+				text += (i+1) + " ";
+			} else {
 				text += i+1;
-			} else {
-				text += (int)Math.floor((i+1)/10.0);
-			}
-		}
-		text += "\n   ";
-		for (int i=0;i<width;i++) {
-			if (i+1 < 10) {
-				text += " ";
-			} else {
-				text += (i+1)%10;
 			}
 		}
 		

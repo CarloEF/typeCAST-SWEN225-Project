@@ -2,6 +2,7 @@ package swen225.cluedo;
 
 public class Weapon implements CluedoObject {
 	private String name;
+	private String tileValue;
 	//should always be a RoomTile
 	private Tile tile;
 	
@@ -10,8 +11,9 @@ public class Weapon implements CluedoObject {
 	 * @param name
 	 * @param tile
 	 */
-	public Weapon(String name) {
+	public Weapon(String name, String tileValue) {
 		this.name = name;
+		this.tileValue = tileValue;
 		this.tile = null;
 	}
 	
@@ -39,5 +41,9 @@ public class Weapon implements CluedoObject {
 		
 		newTile.setObject(this);
 		tile = newTile;
+	}
+	
+	public String toString() {
+		return tileValue;
 	}
 }

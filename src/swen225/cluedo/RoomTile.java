@@ -27,8 +27,17 @@ public class RoomTile extends Tile {
 		return room;
 	}
 	
+	public boolean isAccessible() {
+		return false;
+	}
+	
 	public String toString() {
-		return String.valueOf(room.getName().charAt(0));
+		String tileValue = super.toString();
+		//if tile doesn't have an object on it return room's tile value
+		if (tileValue.equals(" ")) {
+			return room.toString();
+		}
+		return tileValue;
 	}
 
 }

@@ -12,8 +12,11 @@ public class Room implements Card {
 	
 	private String name;
 	
-	public Room(String name) {
+	private String tileValue;
+	
+	public Room(String name, String tileValue) {
 		this.name = name;
+		this.tileValue = tileValue;
 		tiles = new ArrayList<RoomTile>();
 		exitTiles = new HashSet<Tile>();
 	}
@@ -34,11 +37,19 @@ public class Room implements Card {
 		exitTiles.add(tile);
 	}
 	
+	public Set<Tile> getExitTiles() {
+		return exitTiles;
+	}
+	
 	public void addTile(RoomTile tile) {
 		tiles.add(tile);
 	}
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String toString() {
+		return tileValue;
 	}
 }

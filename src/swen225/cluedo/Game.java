@@ -6,6 +6,7 @@ package swen225.cluedo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -86,7 +87,7 @@ public class Game {
 											"1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/2/2/2/2/2/6/" +
 											"1/0/0/0/0/0/4/1/4/1/0/0/0/0/4/1/4/1/0/0/0/0/0/4/" + 
 											"1/0/0/0/0/0/12/1/12/1/0/0/0/0/4/9/4/9/0/0/0/0/0/4/" +
-											"9/8/8/8/8/12/0/13/0/9/8/8/8/8/12/0/13/0/9/8/8/8/8/9/";
+											"9/8/8/8/8/12/0/13/0/9/8/8/8/8/12/0/13/0/9/8/8/8/8/12/";
 	
 	//stores the number of players
 	int playerNum;
@@ -167,29 +168,29 @@ public class Game {
 		Room lounge = new Room("Lounge");
 		Room diningRoom = new Room("Dining Room");*/
 		
-		addPlayer(new Player("Miss Scarlett"));
-		addPlayer(new Player("Col. Mustard"));
-		addPlayer(new Player("Mrs. White"));
-		addPlayer(new Player("Mr. Green"));
-		addPlayer(new Player("Mrs. Peacock"));
-		addPlayer(new Player("Prof. Plum"));
+		addPlayer(new Player("Miss Scarlett", "S"));
+		addPlayer(new Player("Col. Mustard", "M"));
+		addPlayer(new Player("Mrs. White", "W"));
+		addPlayer(new Player("Mr. Green", "G"));
+		addPlayer(new Player("Mrs. Peacock", "P"));
+		addPlayer(new Player("Prof. Plum", "p"));
 		
-		addWeapon(new Weapon("Candlestick"));
-		addWeapon(new Weapon("Dagger"));
-		addWeapon(new Weapon("Lead Pipe"));
-		addWeapon(new Weapon("Revolver"));
-		addWeapon(new Weapon("Rope"));
-		addWeapon(new Weapon("Spanner"));
+		addWeapon(new Weapon("Candlestick", "C"));
+		addWeapon(new Weapon("Dagger", "D"));
+		addWeapon(new Weapon("Lead Pipe", "L"));
+		addWeapon(new Weapon("Revolver", "R"));
+		addWeapon(new Weapon("Rope", "r"));
+		addWeapon(new Weapon("Spanner", "s"));
 		
-		addRoom(new Room("Kitchen"));
-		addRoom(new Room("Ball Room"));
-		addRoom(new Room("Conservatory"));
-		addRoom(new Room("Billiard Room"));
-		addRoom(new Room("Library"));
-		addRoom(new Room("Study"));
-		addRoom(new Room("Hall"));
-		addRoom(new Room("Lounge"));
-		addRoom(new Room("Dining Room"));
+		addRoom(new Room("Kitchen", "K"));
+		addRoom(new Room("Ball Room", "B"));
+		addRoom(new Room("Conservatory", "C"));
+		addRoom(new Room("Billiard Room", "b"));
+		addRoom(new Room("Library", "L"));
+		addRoom(new Room("Study", "S"));
+		addRoom(new Room("Hall", "H"));
+		addRoom(new Room("Lounge", "l"));
+		addRoom(new Room("Dining Room", "D"));
 		
 	}
 	
@@ -224,35 +225,35 @@ public class Game {
 	 * Adds the room exits
 	 */
 	private void addRoomExits() {
-		rooms.get("Kitchen").addExitTile(board.getTile(4, 7));
+		rooms.get("Kitchen").addExitTile(board.getTile(4, 6));
 		
-		rooms.get("Ball Room").addExitTile(board.getTile(7, 5));
-		rooms.get("Ball Room").addExitTile(board.getTile(9, 8));
-		rooms.get("Ball Room").addExitTile(board.getTile(14, 8));
-		rooms.get("Ball Room").addExitTile(board.getTile(16, 5));
+		rooms.get("Ball Room").addExitTile(board.getTile(8, 5));
+		rooms.get("Ball Room").addExitTile(board.getTile(9, 7));
+		rooms.get("Ball Room").addExitTile(board.getTile(14, 7));
+		rooms.get("Ball Room").addExitTile(board.getTile(15, 5));
 		
-		rooms.get("Conservatory").addExitTile(board.getTile(18, 5));
+		rooms.get("Conservatory").addExitTile(board.getTile(18, 4));
 		
-		rooms.get("Billiard Room").addExitTile(board.getTile(17, 9));
-		rooms.get("Billiard Room").addExitTile(board.getTile(22, 13));
+		rooms.get("Billiard Room").addExitTile(board.getTile(18, 9));
+		rooms.get("Billiard Room").addExitTile(board.getTile(22, 12));
 		
-		rooms.get("Library").addExitTile(board.getTile(20, 13));
-		rooms.get("Library").addExitTile(board.getTile(16, 16));
+		rooms.get("Library").addExitTile(board.getTile(20, 14));
+		rooms.get("Library").addExitTile(board.getTile(17, 16));
 		
-		rooms.get("Study").addExitTile(board.getTile(17, 20));
+		rooms.get("Study").addExitTile(board.getTile(17, 21));
 
-		rooms.get("Hall").addExitTile(board.getTile(15, 20));
-		rooms.get("Hall").addExitTile(board.getTile(12, 17));
-		rooms.get("Hall").addExitTile(board.getTile(11, 17));
+		rooms.get("Hall").addExitTile(board.getTile(14, 20));
+		rooms.get("Hall").addExitTile(board.getTile(12, 18));
+		rooms.get("Hall").addExitTile(board.getTile(11, 18));
 		
-		rooms.get("Lounge").addExitTile(board.getTile(6, 18));
+		rooms.get("Lounge").addExitTile(board.getTile(6, 19));
 
-		rooms.get("Dining Room").addExitTile(board.getTile(6, 16));
-		rooms.get("Dining Room").addExitTile(board.getTile(8, 12));
+		rooms.get("Dining Room").addExitTile(board.getTile(6, 15));
+		rooms.get("Dining Room").addExitTile(board.getTile(7, 12));
 	}
 	
 	/**
-	 * Sets the players at their starting positions
+	 * Sets the players to their starting positions
 	 */
 	private void setPlayerTiles() {
 		players.get("Miss Scarlett").moveToTile(board.getTile(7, 24));
@@ -372,34 +373,84 @@ public class Game {
 		
 		int stepNum = step1 + step2;
 		
+		System.out.printf("You rolled a %d and a %d.\n", step1, step2);
+		
+		doMove(player, stepNum);
+	}
+	
+	/**
+	 * Gets input and does the move
+	 */
+	private void doMove(Player player, int diceRoll) {
 		int playerX = player.getTile().getX()+1;
 		int playerY = BOARD_HEIGHT - player.getTile().getY();
 		
-		System.out.printf("You rolled a %d and a %d, giving a total of %d\n", step1, step2, stepNum);
-		System.out.printf("You are at (%d, %d)\n", playerX, playerY);
-		System.out.println("Where do you want to move(give in pairs of coords or room name):");
-		
-		int newX = input.nextInt();
-		int newY = input.nextInt();
-		
-		newX--;
-		newY = BOARD_HEIGHT - newY;
-		
-		boolean validMove = board.isValidMove(stepNum, player, newX, newY);
-		
-		while (!validMove) {
-			System.out.println("Invalid move (give in pairs of coords or room name):");
+		try {
 			
-			newX = input.nextInt();
-			newY = input.nextInt();
+			System.out.printf("You are at (%d %d) and have %d moves to use.\n", playerX, playerY, diceRoll);
+			System.out.println("Where do you want to move (give in pairs of coords or room name):");
 			
-			newX--;
-			newY = BOARD_HEIGHT - newY;
+			String textInput = input.next();
 			
-			validMove = board.isValidMove(stepNum, player, newX, newY);
+			//regex to check whether input is a number
+			if (textInput.matches("\\d+")) {
+				int newX = Integer.parseInt(textInput);
+				int newY = input.nextInt();
+				
+				//convert to board array indices
+				newX--;
+				newY = BOARD_HEIGHT - newY;
+				
+				Tile newTile = board.getTile(newX, newY);
+				if (newTile instanceof RoomTile) {
+					Room newRoom = ((RoomTile) newTile).getRoom();
+					
+					boolean validMove = board.isValidMove(diceRoll, player, newRoom);
+					
+					if (validMove) {
+						board.movePlayer(player, newRoom);
+					} else {
+						System.out.println("Move is invalid, please try again");
+						doMove(player, diceRoll);
+					}
+				} else {
+				
+					boolean validMove = board.isValidMove(diceRoll, player, newX, newY);
+					
+					if (validMove) {
+						board.movePlayer(player, newX, newY);
+					} else {
+						System.out.println("Move is invalid, please try again");
+						doMove(player, diceRoll);
+					}
+				}
+			} else {
+				//input is text, so check if it's a valid room
+				if (rooms.containsKey(textInput)) {
+					Room room = rooms.get(textInput);
+					
+					boolean validMove = board.isValidMove(diceRoll, player, room);
+					
+					if (validMove) {
+						board.movePlayer(player, room);
+					} else {
+						System.out.println("Move is invalid, please try again");
+						doMove(player, diceRoll);
+					}
+				} else {
+					System.out.println("Move is invalid, please try again");
+					doMove(player, diceRoll);
+				}
+			}
+			
+			
+		} catch(InputMismatchException e) {
+			System.out.println("Move is invalid, please try again");
+			doMove(player, diceRoll);
 		}
-		
-		board.movePlayer(player, newX, newY);
+	}
+	
+	private void doSuggestion() {
 		
 	}
 	

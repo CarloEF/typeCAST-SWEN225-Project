@@ -23,6 +23,6 @@ public class InaccessibleTile extends Tile {
 	}
 	
 	public String toString() {
-		return " ";
+		return "*";
 	}
 }

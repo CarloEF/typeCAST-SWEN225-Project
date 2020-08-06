@@ -59,5 +59,13 @@ public abstract class Tile {
 		return object == null;
 	}
 	
-	public abstract String toString();
+	/**
+	 * Overridden
+	 */
+	public String toString() {
+		if (hasObject()) {
+			return object.toString();
+		}
+		return " ";
+	}
 }

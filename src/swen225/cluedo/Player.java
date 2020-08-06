@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Player implements CluedoObject {
 	private List<Card> hand;
 	private String name;
+	private String tileValue;
 	private Tile tile;
 	
 	/**
@@ -13,8 +14,9 @@ public class Player implements CluedoObject {
 	 * @param name
 	 * @param tile
 	 */
-	public Player(String name) {
+	public Player(String name, String tileValue) {
 		this.name = name;
+		this.tileValue = tileValue;
 		this.hand = new ArrayList<Card>();
 		this.tile = null;
 	}
@@ -61,5 +63,9 @@ public class Player implements CluedoObject {
 		Tile newTile = room.getFreeTile();
 		
 		moveToTile(newTile);
+	}
+	
+	public String toString() {
+		return tileValue;
 	}
 }
