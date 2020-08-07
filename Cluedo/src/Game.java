@@ -58,6 +58,7 @@ public class Game {
 		while (!gameOver) {
 			// Cycles through the player list.
 			for (Player p : this.players) {
+				this.board.drawBoard();
 				if (newTurn(p, s)) {
 					playerWon = p;
 					gameOver = true;
@@ -153,16 +154,16 @@ public class Game {
 	public void setMurder() {
 		// Grabs a random Weapon, Room, and Character from their respective Lists.
 		// The Object in the specific list should be the same as the one in the CardsWithMurder list.
+		CharacterCard chara = this.characterList.get(new Random().nextInt(characterList.size()));
 		WeaponCard weapon = this.weaponList.get(new Random().nextInt(weaponList.size()));
 		RoomCard room = this.roomList.get(new Random().nextInt(roomList.size()));
-		CharacterCard chara = this.characterList.get(new Random().nextInt(characterList.size()));
 
-		this.murder = new Suggestion(weapon, chara, room);
+		this.murder = new Suggestion(chara, weapon, room);
 		// Establishes a new set without the murder cards.
 		ArrayList<Card> temp = this.cardsWithMurder;
+		temp.remove(chara);
 		temp.remove(weapon);
 		temp.remove(room);
-		temp.remove(chara);
 		// This new set will be used to distribute the non-murder cards to players.
 		this.cards = temp;
 	}
@@ -189,22 +190,135 @@ public class Game {
 	// PLAYER MOVES
 	//------------------------
 
-	public boolean newTurn(Player player, Scanner in) {
+	public boolean newTurn(Player player, Scanner s) {
+
+		int diceRoll = (int)(Math.random()*6)+1 + (int)(Math.random()*6)+1;
+
+		System.out.println("\nPlayer "+player.getNumber()+"'s turn. You have "+ diceRoll + " moves left.");
+		System.out.println("WASD to move, M to make a suggestion, or P to accuse");
+
+		boolean moveEnd = false;
+
+		String turn = s.nextLine();
+
+		// Move player.
+		if (turn.equalsIgnoreCase("W") || turn.equalsIgnoreCase("A") ||
+				turn.equalsIgnoreCase("S") || turn.equalsIgnoreCase("D")) {
+			int x = player.getX();
+			int y = player.getY();
+
+			if (turn.equalsIgnoreCase("W")) {
+				this.board.checkAccessible(x, y-1);
+				player.move(x, y-1);
+				diceRoll -= 1;
+			}
+			else if (turn.equalsIgnoreCase("A")) {
+				this.board.checkAccessible(x-1, y);
+				player.move(x, y-1);
+				diceRoll -= 1;
+			}
+			else if (turn.equalsIgnoreCase("S")) {
+				this.board.checkAccessible(x, y+1);
+				player.move(x, y-1);
+				diceRoll -= 1;
+			}
+			else if (turn.equalsIgnoreCase("D")) {
+				this.board.checkAccessible(x+1, y);
+				player.move(x, y-1);
+				diceRoll -= 1;
+			}
+		}
+		// Make a suggestion
+		else if (turn.equalsIgnoreCase("M")) {
+			if (player.isInRoom()) {
+				// Ask which character to suggest, print out possible Character options.
+				System.out.println("Which character would you like to suggest?");
+				System.out.println(this.getCharacterList());
+				CharacterCard suggChar = null;
+				while (suggChar == null) {
+					try {
+						suggChar = this.characterList.get(Integer.parseInt(s.nextLine()));
+					} catch (NumberFormatException error) {
+						System.err.println("Invalid Format.");
+					}
+				}
+				// Ask which weapon to suggest, print out possible Weapon options.
+				System.out.println("Which Weapon would you like to suggest?");
+				System.out.println(this.getWeaponList());
+				WeaponCard suggWeap = null;
+				while (suggWeap == null) {
+					try {
+						suggWeap = this.weaponList.get(Integer.parseInt(s.nextLine()));
+					} catch (NumberFormatException error) {
+						System.err.println("Invalid Format.");
+					}
+				}
+				// Room is pre-set, and cannot be suggested.
+				RoomCard suggRoom = player.currentRoom();
+
+				Suggestion sugg = new Suggestion(suggChar, suggWeap, suggRoom);
+				refuteAll(player, sugg, s);
+			}
+
+		}
+		// Make an accusation
+		else if (turn.equalsIgnoreCase("P")) {
+
+		}
+
+
+
+
+
+
+
+
 		return true;		// To be changed.
 	}
 
-	public boolean suggest(Player suggester, Suggestion suggestion) {
+	public boolean refuteAll(Player suggester, Suggestion suggestion, Scanner s) {
+		System.out.println("Player "+suggester.getNumber()+" has chosen to suggest:" +
+				"\n"+"Character: "+suggestion.getCharacter().getCardName() +
+				"\n"+"Weapon: "+suggestion.getWeapon().getCardName() +
+				"\n"+"Room: "+suggestion.getRoom().getCardName());
+
 		// Clones a new player list, without the suggester.
 		ArrayList<Player> temp = this.getPlayerList();
 		temp.remove(suggester);
 		for (Player p : temp) {
-			if (p.refute(suggestion)) {
+			if (p.refute(suggestion, s)) {
 				return false;
 			}
 		}
 		// Nobody was able to refute.
 		return true;
 	}
+
+	public String getCharacterList() {
+		String temp = "Characters: ";
+		for (int i = 0; i < this.characterList.size(); i++) {
+			String lineTemp = "\n"+i+": "+this.characterList.get(i).getCardName();
+			temp += lineTemp;
+		}
+		return temp;
+	}
+	public String getWeaponList() {
+		String temp = "Weapons: ";
+		for (int i = 0; i < this.weaponList.size(); i++) {
+			String lineTemp = "\n"+i+": "+this.weaponList.get(i).getCardName();
+			temp += lineTemp;
+		}
+		return temp;
+	}
+	public String getRoomList() {
+		String temp = "Rooms: ";
+		for (int i = 0; i < this.roomList.size(); i++) {
+			String lineTemp = "\n"+i+": "+this.roomList.get(i).getCardName();
+			temp += lineTemp;
+		}
+		return temp;
+	}
+
 
 	//------------------------
 	// INTERFACE

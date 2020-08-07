@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
 
 public class Player
 {
@@ -15,7 +16,8 @@ public class Player
 	private Tile location;
 	private int x;					// For easier access; Can be removed.
 	private int y;					// For easier access; Can be removed.
-	private boolean inRoom;			// 
+	private boolean inRoom;			//
+	private RoomCard currentRoom;
 
 	//------------------------
 	// CONSTRUCTOR
@@ -39,10 +41,12 @@ public class Player
 	public void setNumber(int number) {		// Shouldn't really be used: Player number is set up in constructor.
 		this.playerNumber = number;
 	}
-	public void setRoom() {
+	public void setRoom(RoomCard room) {
+		this.currentRoom = room;
 		this.inRoom = true;
 	}
-	public void setHallway() {
+	public void leftRoom() {
+		this.currentRoom = null;
 		this.inRoom = false;
 	}
 	public void setXY(int x, int y) {
@@ -71,7 +75,7 @@ public class Player
 		 */
 	}
 
-	public boolean refute(Suggestion suggestion) {		// While loop within Game until TRUE is reached, or all other players have been asked 
+	public boolean refute(Suggestion suggestion, Scanner s) {		// While loop within Game until TRUE is reached, or all other players have been asked 
 		if (this.startingCards.contains(suggestion.getWeapon()) ||			// If current refuter has the suggestion's weapon.
 				this.startingCards.contains(suggestion.getCharacter()) ||	// If current refuter has the suggestion's character.
 				this.startingCards.contains(suggestion.getRoom())) {		// If current refuter has the suggestion's room.
@@ -79,6 +83,16 @@ public class Player
 			/*
 			 * ASK CURRENT REFUTER WHICH CARD THEY WOULD LIKE TO SHOW
 			 */
+			// Prints out the choices available
+			System.out.println(suggestion.getCardList());
+			System.out.println(this.currentChar.getCardName()+": player "+this.getNumber()+" is able to refute.");
+			System.out.println("Which card would you like to refute?");
+
+			String refute = s.nextLine();
+			if (this.startingCards.contains(null)) {			// TO CHANGE: Needs a comparator.
+
+			}
+
 			// Ask player which Card they would like to show:
 			// If they don't own a card that has the same cardName as the specified card, Output error.
 			// 
@@ -102,5 +116,17 @@ public class Player
 	}
 	public int getY() {
 		return this.y;
+	}
+	public boolean isInRoom() {
+		if (this.inRoom) {
+			return true;
+		}
+		return false;
+	}
+	public RoomCard currentRoom() {
+		if (this.inRoom) {
+			return this.currentRoom;
+		}
+		return null;
 	}
 }

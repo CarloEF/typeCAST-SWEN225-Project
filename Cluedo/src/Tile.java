@@ -67,7 +67,10 @@ public class Tile {
 	public int getY() {			// Getter method for acquring this tile's Y coordinate.
 		return this.y;
 	}
-
+	
+	public boolean passable() {		// Should be unreachable: Simply an interface.
+		return true;
+	}
 	public String toString() {
 		return null; // Should be unreachable: Simply an interface.
 	}
