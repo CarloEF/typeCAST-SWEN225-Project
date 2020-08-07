@@ -3,13 +3,16 @@
  */
 package swen225.cluedo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * 
@@ -99,6 +102,10 @@ public class Game {
 	Map<String, Player> players;
 	Map<String, Weapon> weapons;
 	Map<String, Room> rooms;
+	
+	Player murderer = null;
+	Weapon murderWeapon = null;
+	Room murderRoom = null;
 	
 	List<Player> playersOrdered;
 	
@@ -305,9 +312,6 @@ public class Game {
 		Collections.shuffle(cards);
 		
 		//take out 1 player, 1 weapon, 1 room cards for the murder circumstance
-		Player murderer = null;
-		Weapon murderWeapon = null;
-		Room murderRoom = null;
 		int index = 0;
 		while(murderer == null || murderWeapon == null || murderRoom == null) {
 			Card card = cards.get(index);
@@ -363,10 +367,11 @@ public class Game {
 	 */
 	public void startPlayerTurn(Player player) {
 		
-		System.out.println(player.getName() + "'s turn:");
+		System.out.println("Board:");
 		
-		System.out.println(board);
-		System.out.println("");
+		System.out.println(board + "\n");
+		
+		System.out.printf("%s's turn:\n", player.getName());
 		
 		int step1 = diceRoll();
 		int step2 = diceRoll();
@@ -374,84 +379,259 @@ public class Game {
 		int stepNum = step1 + step2;
 		
 		System.out.printf("You rolled a %d and a %d.\n", step1, step2);
-		
+		//player MUST make a move
 		doMove(player, stepNum);
+		
+		Tile tile = player.getTile();
+		if (tile instanceof RoomTile) {
+			//can do suggestion
+			doSuggestion(player);
+		}
 	}
 	
 	/**
 	 * Gets input and does the move
+	 * Need to add more outputs
 	 */
 	private void doMove(Player player, int diceRoll) {
+		//converts player coords from array indices to board coords
 		int playerX = player.getTile().getX()+1;
 		int playerY = BOARD_HEIGHT - player.getTile().getY();
+		
+		Set<Tile> validTiles = new HashSet<Tile>();
+		Set<Room> validRooms = new HashSet<Room>();
+		
+		//gets all valid tiles and rooms the player can go to and puts them into the sets
+		board.getValidMoves(diceRoll, player, validTiles, validRooms);
+		
+		if (validTiles.size() == 0 && validRooms.size() == 0) {
+			System.out.println("You are blocked and cannot move!");
+			return;
+		}
 		
 		try {
 			
 			System.out.printf("You are at (%d %d) and have %d moves to use.\n", playerX, playerY, diceRoll);
 			System.out.println("Where do you want to move (give in pairs of coords or room name):");
 			
-			String textInput = input.next();
+			String textInput;
 			
-			//regex to check whether input is a number
-			if (textInput.matches("\\d+")) {
-				int newX = Integer.parseInt(textInput);
-				int newY = input.nextInt();
+			//catch and ignore nothing lines
+			do {
+				textInput = input.nextLine();
+			} while (textInput.equals(""));
+			
+			String[] inputs = textInput.split(" ");
+			
+			if (inputs.length == 0) {
+				System.out.println("Invalid input, please try again");
+				doMove(player, diceRoll);
+				//regex to check whether input is a number
+			} else if (inputs.length == 2 && inputs[0].matches("\\d+")) {
+				//coords
+				int newX = Integer.parseInt(inputs[0]);
+				int newY = Integer.parseInt(inputs[1]);
 				
 				//convert to board array indices
 				newX--;
 				newY = BOARD_HEIGHT - newY;
 				
 				Tile newTile = board.getTile(newX, newY);
-				if (newTile instanceof RoomTile) {
+				
+				//check if tile is invalid
+				if (newTile == null) {
+					System.out.println("Invalid coordinates, please try again.");
+					doMove(player, diceRoll);
+					//check if they want to move to a room
+				} else if (newTile instanceof RoomTile) {
 					Room newRoom = ((RoomTile) newTile).getRoom();
 					
-					boolean validMove = board.isValidMove(diceRoll, player, newRoom);
-					
-					if (validMove) {
+					if (validRooms.contains(newRoom)) {
 						board.movePlayer(player, newRoom);
 					} else {
-						System.out.println("Move is invalid, please try again");
+						System.out.println("Can't get to that room, please try again.");
 						doMove(player, diceRoll);
 					}
+					//coords are at a valid hallway tile
 				} else {
-				
-					boolean validMove = board.isValidMove(diceRoll, player, newX, newY);
-					
-					if (validMove) {
+					if (validTiles.contains(newTile)) {
 						board.movePlayer(player, newX, newY);
 					} else {
-						System.out.println("Move is invalid, please try again");
+						System.out.println("Can't get to that tile, please try again");
 						doMove(player, diceRoll);
 					}
 				}
 			} else {
+				//must be a room
+				
+				//join all of line together, rooms are only 2 words max so this is sufficient
+				if (inputs.length == 2) {
+					textInput = String.join(" ", inputs[0], inputs[1]);
+				} else {
+					textInput = inputs[0];
+				}
+				
 				//input is text, so check if it's a valid room
 				if (rooms.containsKey(textInput)) {
 					Room room = rooms.get(textInput);
 					
-					boolean validMove = board.isValidMove(diceRoll, player, room);
-					
-					if (validMove) {
+					if (validRooms.contains(room)) {
 						board.movePlayer(player, room);
 					} else {
-						System.out.println("Move is invalid, please try again");
+						System.out.println("Can't get to that room, please try again");
 						doMove(player, diceRoll);
 					}
 				} else {
-					System.out.println("Move is invalid, please try again");
+					System.out.println("Invalid room, please try again");
 					doMove(player, diceRoll);
 				}
 			}
-			
-			
 		} catch(InputMismatchException e) {
-			System.out.println("Move is invalid, please try again");
+			System.out.println("Invalid input, please try again");
 			doMove(player, diceRoll);
 		}
 	}
 	
-	private void doSuggestion() {
+	/**
+	 * 
+	 * @param player
+	 * @return - whether the suggestion was refuted
+	 */
+	private void doSuggestion(Player player) {
+		//assumes player is in a roomtile
+		Room room = ((RoomTile)player.getTile()).getRoom();
 		
+		System.out.printf("You(%s) are in room %s.\n", player.getName(), room.getName());
+		
+		List<Card> playerCards = player.getCards();
+		String cardString = "";
+		for (int i=0;i<playerCards.size();i++) {
+			cardString += playerCards.get(i).getName();
+			if (i != playerCards.size()-1) {
+				cardString += ", ";
+			}
+		}
+		System.out.printf("You have cards %s.\n", cardString);
+				
+		System.out.println("You can make a suggestion about the murder circumstances.");
+		
+		System.out.println("Who do you think the murderer was?");
+		
+		Player murdererSugg = getSuggestion(players);
+		
+		System.out.println("What weapon do you think was used to carry out the murder?");
+		
+		Weapon weaponSugg = getSuggestion(weapons);
+		
+		//move objects to the room
+		board.movePlayer(murdererSugg, room);
+		board.moveWeapon(weaponSugg, room);
+		
+		//go through all the players in order
+		int playerIndex = playersOrdered.indexOf(player);
+		
+		boolean refuted = false;
+		
+		for (int index = (playerIndex + 1) % playerNum; index != playerIndex; index++, index %= playerNum) {
+			Player currPlayer = playersOrdered.get(index);
+			List<Card> refuteCards = currPlayer.getRefutes(murdererSugg, weaponSugg, room);
+			
+			if (refuteCards.size() == 0) {
+				System.out.printf("%s cannot refute the murder suggestion.\n", currPlayer.getName());
+			} else if (refuteCards.size() == 1) {
+				System.out.printf("%s refuted the murder suggestion with %s.\n", currPlayer.getName(), refuteCards.get(0).getName());
+				refuted = true;
+				break;
+			} else {
+				
+				System.out.printf("%s needs to choose a card to refute.\n", currPlayer.getName());
+				System.out.println("Choose a card to use:");
+				for (Card c : refuteCards) {
+					System.out.printf("%s\n", c.getName());
+				}
+				
+				String cardName;
+				Card inputCard = null;
+				
+				do {
+					cardName = input.nextLine();
+					for (Card c : refuteCards) {
+						if (c.getName().equals(cardName)) {
+							inputCard = c;
+							break;
+						}
+					}
+				} while (inputCard == null);
+				
+				System.out.printf("%s refuted the murder suggestion with %s.\n", currPlayer.getName(), inputCard.getName());
+				refuted = true;
+				break;
+			}
+		}
+
+		//now do accusation
+		if (!refuted) {
+			System.out.println("Suggestion was unrefuted, would you like to accuse?");
+			
+			if (getBooleanInput()) {
+				if (murderRoom == room && murderer == murdererSugg && murderWeapon == weaponSugg) {
+					System.out.println("Congratulations, you won!");
+				} else {
+					System.out.println("Oops, that was not correct, you can no longer suggest/accuse");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Useful generics method to get input about a suggested murder circumstance
+	 * @param <T>
+	 * @param map
+	 * @return
+	 */
+	private <T> T getSuggestion(Map<String, T> map) {
+		String objName;
+		T objSugg = null;
+		
+		do {
+			//catch and ignore nothing lines
+			do {
+				objName = input.nextLine();
+			} while (objName.equals(""));
+			
+			if (map.containsKey(objName)) {
+				objSugg = map.get(objName);
+			} else {
+				System.out.println("Invalid object, please try again.");
+			}
+		} while (objSugg == null);
+		
+		return objSugg;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean getBooleanInput() {
+		String[] yesInputs = {"y", "yes", "true", "t"};
+		String[] noInputs = {"n", "no", "false", "f"};
+		
+		
+		while(true) {
+			String text = input.next();
+			
+			for (String y : yesInputs) {
+				if (text.equalsIgnoreCase(y)) {
+					return true;
+				}
+			}
+			for (String n : noInputs) {
+				if (text.equalsIgnoreCase(n)) {
+					return false;
+				}
+			}
+		}
 	}
 	
 	/**

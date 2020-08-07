@@ -31,6 +31,25 @@ public class Player implements CluedoObject {
 	
 	/**
 	 * 
+	 * @param murderSugg
+	 * @param weaponSugg
+	 * @param roomSugg
+	 * @return
+	 */
+	public List<Card> getRefutes(Player murdererSugg, Weapon weaponSugg, Room roomSugg) {
+		List<Card> refuteCards = new ArrayList<Card>();
+		
+		for (Card card : hand) {
+			if (card == murdererSugg || card == weaponSugg || card == roomSugg) {
+				refuteCards.add(card);
+			}
+		}
+		
+		return refuteCards;
+	}
+	
+	/**
+	 * 
 	 * @param newTile
 	 */
 	public void moveToTile(Tile newTile) {
@@ -46,6 +65,10 @@ public class Player implements CluedoObject {
 	 */
 	public Tile getTile() {
 		return tile;
+	}
+	
+	public List<Card> getCards() {
+		return hand;
 	}
 	
 	/**
