@@ -16,32 +16,32 @@ public class RoomCard extends Card {
 	// INTERFACE
 	//------------------------
 
-	public String toString() {
-		if (this.getCardName() == "Kitchen") {
+	public String toString() {			// use toString() for displaying on the board.
+		if (this.getCardName().equals("Kitchen")) {
 			return "K";
 		}
-		else if (this.getCardName() == "Ballroom") {
+		else if (this.getCardName().equals("Ballroom")) {
 			return "B";
 		}
-		else if (this.getCardName() == "Conservatory") {
+		else if (this.getCardName().equals("Conservatory")) {
 			  return "C";
 		  }
-		else if (this.getCardName() == "Dining Room") {
+		else if (this.getCardName().equals("Dining Room")) {
 			  return "D";
 		  }
-		else if (this.getCardName() == "Billiard Room") {
+		else if (this.getCardName().equals("Billiard Room")) {
 			  return "b";
 		  }
-		else if (this.getCardName() == "Library") {
+		else if (this.getCardName().equals("Library")) {
 			  return "L";
 		  }
-		else if (this.getCardName() == "Lounge") {
+		else if (this.getCardName().equals("Lounge")) {
 			  return "l";
 		  }
-		else if (this.getCardName() == "Hall") {
+		else if (this.getCardName().equals("Hall")) {
 			  return "H";
 		  }
-		else if (this.getCardName() == "Study") {
+		else if (this.getCardName().equals("Study")) {
 			  return "S";
 		  }
 		else return null; // Should be unreachable: Only 9 Rooms.

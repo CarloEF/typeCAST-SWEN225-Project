@@ -16,7 +16,11 @@ public class InaccessibleTile extends Tile {
 	// INTERFACE
 	//------------------------
 
-	public String toString() {
-		return "0";
+	public boolean passable() {		// The player cannot walk into this tile.
+		return false;
+	}
+	
+	public String toString() {		// Return a *. The notation for an inaccessible tile.
+		return "*";
 	}
 }

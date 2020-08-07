@@ -17,6 +17,9 @@ public class HallwayTile extends Tile {
 	//------------------------
 
 	public String toString() {
-		return " ";
+		if (this.hasPlayer()) {		// If this tile has a player on it, return the player's number.
+			return Integer.toString(this.getCurrentPlayer().getNumber());		// FIXXXXXX
+		}
+		return " ";					// If not, return a space; The hallway's notation.
 	}
 }

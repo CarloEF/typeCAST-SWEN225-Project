@@ -4,9 +4,9 @@ public class Suggestion {
 	// MEMBER VARIABLES
 	//------------------------
 
-	WeaponCard weapon;
-	CharacterCard character;
-	RoomCard room;
+	private WeaponCard weapon;
+	private CharacterCard character;
+	private RoomCard room;
 	
 	//------------------------
 	// CONSTRUCTOR

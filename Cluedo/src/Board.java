@@ -1,23 +1,30 @@
-public class Board {
+public class Board {	
 
 	//------------------------
 	// MEMBER VARIABLES
 	//------------------------
 
 	private Tile[][] board;
-	private int numPlayers;
 
 	//------------------------
 	// CONSTRUCTOR
 	//------------------------
 
-	public Board()
-	{}
+	public Board(int x, int y) {
+		this.board = new Tile[x][y];
+	}
+
+	
 
 
 	//------------------------
-	// Methods
+	// INTERFACE
 	//------------------------
+
+	public Tile[][] getBoard() {
+		return this.board;
+	}
+	
 	public Tile getTileAt(int x, int y) {
 		return this.board[x][y];
 	}
@@ -33,13 +40,6 @@ public class Board {
 		finalString += "\n";
 		System.out.println(finalString);
 	}
-
-
-	//------------------------
-	// INTERFACE
-	//------------------------
-
-	public void delete()
-	{}
-
+	
+	
 }

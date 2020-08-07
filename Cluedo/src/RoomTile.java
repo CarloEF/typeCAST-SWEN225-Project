@@ -4,7 +4,7 @@ public class RoomTile extends Tile {
 	// MEMBER VARIABLES
 	//------------------------
 
-	private RoomCard room;
+	private RoomCard room;		// This RoomTile's corresponding RoomCard.
 
 	//------------------------
 	// CONSTRUCTOR
@@ -19,11 +19,21 @@ public class RoomTile extends Tile {
 	// INTERFACE
 	//------------------------
 
-	public RoomCard getRoom() {
+	public boolean passable() {		// The player can walk into this Tile.
+		if (this.hasPlayer()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public RoomCard getRoom() {		// Getter method for acquiring this RoomTile's RoomCard.
 		return room;
 	}
 
 	public String toString() {
-		return this.room.toString();
+		if (this.hasPlayer()) {		// If this tile has a player on it, return the player's number.
+			return Integer.toString(this.getCurrentPlayer().getNumber());		///  FIXXXXX
+		}
+		return this.room.toString();	// If not, return the room's letter notation.
 	}
 }
