@@ -28,10 +28,12 @@ public class Game {
 	public Game() {
 		this.board = new Board(BOARD_HEIGHT, BOARD_WIDTH);
 		this.setCardSet();
+		Scanner s = new Scanner(System.in);
+		this.setup(s);
+		this.run(s);
 	}
 
-	public void setup() {
-		Scanner s = new Scanner(System.in);
+	public void setup(Scanner s) {
 		int num = 0;
 		do {
 			System.out.print("How many players? 3-6.");
@@ -45,9 +47,29 @@ public class Game {
 
 		this.numPlayers = num;
 		this.setPlayers(numPlayers);
-		this.setCardSet();
 		this.setMurder();
+		this.distributeCards();
+	}
 
+	// Essentially a while-loop for every player's turn until one wins.
+	public void run(Scanner s) {
+		boolean gameOver = false;
+		Player playerWon = null;
+		while (!gameOver) {
+			// Cycles through the player list.
+			for (Player p : this.players) {
+				if (newTurn(p, s)) {
+					playerWon = p;
+					gameOver = true;
+					break;
+				}
+			}
+		}
+
+		System.out.println("Player "+playerWon.getNumber()+"has solved the murder!");
+		System.out.println("Character: "+this.murder.getCharacter().getCardName()+"\n" +
+				"committed the murder with a: "+this.murder.getWeapon().getCardName()+"\n" +
+				"in the room: "+this.murder.getRoom().getCardName());
 	}
 
 	public void setPlayers(int n) {
@@ -166,6 +188,10 @@ public class Game {
 	//------------------------
 	// PLAYER MOVES
 	//------------------------
+
+	public boolean newTurn(Player player, Scanner in) {
+		return true;		// To be changed.
+	}
 
 	public boolean suggest(Player suggester, Suggestion suggestion) {
 		// Clones a new player list, without the suggester.
