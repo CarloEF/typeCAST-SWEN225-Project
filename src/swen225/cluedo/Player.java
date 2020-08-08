@@ -9,8 +9,10 @@ public class Player implements CluedoObject {
 	private String tileValue;
 	private Tile tile;
 	
+	private boolean allowedAccuse = true;
+	
 	/**
-	 * 
+	 * Constructs the player
 	 * @param name
 	 * @param tile
 	 */
@@ -22,7 +24,7 @@ public class Player implements CluedoObject {
 	}
 	
 	/**
-	 * 
+	 * Adds a card to the player's hand
 	 * @param card
 	 */
 	public void addCard(Card card) {
@@ -30,7 +32,7 @@ public class Player implements CluedoObject {
 	}
 	
 	/**
-	 * 
+	 * Gets the cards a player can use to refute a murder suggestion
 	 * @param murderSugg
 	 * @param weaponSugg
 	 * @param roomSugg
@@ -49,7 +51,7 @@ public class Player implements CluedoObject {
 	}
 	
 	/**
-	 * 
+	 * Moves the player to a tile
 	 * @param newTile
 	 */
 	public void moveToTile(Tile newTile) {
@@ -61,18 +63,39 @@ public class Player implements CluedoObject {
 	}
 	
 	/**
-	 * 
+	 * Gets the tile the player is currently on
 	 */
 	public Tile getTile() {
 		return tile;
 	}
 	
+	/**
+	 * Gets a list of the cards in the player's hand
+	 * @return
+	 */
 	public List<Card> getCards() {
 		return hand;
 	}
 	
 	/**
-	 * 
+	 * Gets whether the player is allowed to suggest/accuse
+	 * @return
+	 */
+	public boolean canAccuse() {
+		return allowedAccuse;
+	}
+	
+	/**
+	 * Sets whether the player is allowed to suggest/accuse
+	 * @param allowed
+	 */
+	public void setCanAccuse(boolean allowed) {
+		allowedAccuse = allowed;
+	}
+	
+	/**
+	 * Gets the player's name
+	 * @return player's name
 	 */
 	public String getName() {
 		return name;
@@ -88,6 +111,9 @@ public class Player implements CluedoObject {
 		moveToTile(newTile);
 	}
 	
+	/**
+	 * Returns the tile value
+	 */
 	public String toString() {
 		return tileValue;
 	}

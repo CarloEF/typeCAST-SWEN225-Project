@@ -1,9 +1,5 @@
-/**
- * 
- */
 package swen225.cluedo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,15 +11,18 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * 
+ * Game class that handles all input/output and the game logic
  *
  */
 public class Game {
 	
-	//constants
+	/*************
+	 * CONSTANTS *
+	 *************/
 	public static final int BOARD_WIDTH = 24;
 	public static final int BOARD_HEIGHT = 25;
 	
+	//player order clockwise around the board
 	public static final String[] PLAYER_ORDER = {"Miss Scarlett", "Col. Mustard", "Mrs. White", "Mr. Green", "Mrs. Peacock", "Prof. Plum"};
 	
 	//i = inaccessible
@@ -107,14 +106,16 @@ public class Game {
 	Weapon murderWeapon = null;
 	Room murderRoom = null;
 	
+	//list of only players that are playing in order 
 	List<Player> playersOrdered;
 	
 	boolean isRunning = true;
 	
+	//get all input from this scanner
 	Scanner input;
 	
 	/**
-	 * 
+	 * Constructs the game, sets up stuff
 	 * @param playerNum
 	 */
 	public Game() {
@@ -130,7 +131,7 @@ public class Game {
 	}
 
 	/**
-	 * 
+	 * Main method, initiates the game and starts it
 	 */
 	public static void main(String[] args) {
 		Game game = new Game();
@@ -151,29 +152,6 @@ public class Game {
 	 * Initiates the cards
 	 */
 	private void initCards() {
-		/*Player missScarlett = new Player("Miss Scarlett", board.getTile(7, 24));
-		Player colMustard = new Player("Col. Mustard", board.getTile(0, 17));
-		Player mrsWhite = new Player("Mrs. White", board.getTile(9, 0));
-		Player mrGreen = new Player("Mr. Green", board.getTile(14, 0));
-		Player mrsPeacock = new Player("Mrs. Peacock", board.getTile(23, 6));
-		Player profPlum = new Player("Prof. Plum", board.getTile(23, 19));
-		
-		Weapon candlestick = new Weapon("Candlestick");
-		Weapon dagger = new Weapon("Dagger");
-		Weapon leadPipe = new Weapon("Lead Pipe");
-		Weapon revolver = new Weapon("Revolver");
-		Weapon rope = new Weapon("Rope");
-		Weapon spanner = new Weapon("Spanner");
-		
-		Room kitchen = new Room("Kitchen");
-		Room ballRoom = new Room("Ball Room");
-		Room conservatory = new Room("Conservatory");
-		Room billiardRoom = new Room("Billiard Room");
-		Room library = new Room("Library");
-		Room study = new Room("Study");
-		Room hall = new Room("Hall");
-		Room lounge = new Room("Lounge");
-		Room diningRoom = new Room("Dining Room");*/
 		
 		addPlayer(new Player("Miss Scarlett", "S"));
 		addPlayer(new Player("Col. Mustard", "M"));
@@ -272,6 +250,25 @@ public class Game {
 	}
 	
 	/**
+	 * Sets weapons to random rooms
+	 */
+	private void setWeaponTiles() {
+		//copy to new list
+		List<Room> roomsLeft = new ArrayList<Room>(rooms.values());
+		List<Weapon> weaponsLeft = new ArrayList<Weapon>(weapons.values());
+		
+		while (weaponsLeft.size() > 0) {
+			int random = (int)Math.floor(Math.random()*roomsLeft.size());
+			
+			board.moveWeapon(weaponsLeft.get(0), roomsLeft.get(random));
+			
+			roomsLeft.remove(random);
+			weaponsLeft.remove(0);
+		}
+		
+	}
+	
+	/**
 	 * Handles all the logic at the start of the game
 	 */
 	public void startGame() {
@@ -279,6 +276,7 @@ public class Game {
 		initBoard();
 		addRoomExits();
 		setPlayerTiles();
+		setWeaponTiles();
 		
 		playerNum = getPlayerNum();
 		
@@ -383,7 +381,7 @@ public class Game {
 		doMove(player, stepNum);
 		
 		Tile tile = player.getTile();
-		if (tile instanceof RoomTile) {
+		if (tile instanceof RoomTile && player.canAccuse()) {
 			//can do suggestion
 			doSuggestion(player);
 		}
@@ -576,8 +574,29 @@ public class Game {
 			if (getBooleanInput()) {
 				if (murderRoom == room && murderer == murdererSugg && murderWeapon == weaponSugg) {
 					System.out.println("Congratulations, you won!");
+					input.close();
+					isRunning = false;
 				} else {
 					System.out.println("Oops, that was not correct, you can no longer suggest/accuse");
+					player.setCanAccuse(false);
+					
+					int playersLeft = 0;
+					Player last = null;
+					
+					for (Player p : playersOrdered) {
+						if (p.canAccuse()) {
+							playersLeft++;
+							last = p;
+						}
+					}
+					
+					if (playersLeft == 1) {
+						//everyone else accused wrongly, so the last player wins
+						System.out.printf("Everyone else accused incorrectly, so %s wins!\n", last.getName());
+						System.out.printf("The murderer was %s with the %s in the room %s", murderer.getName(), murderWeapon.getName(), murderRoom.getName());
+						input.close();
+						isRunning = false;
+					}
 				}
 			}
 		}

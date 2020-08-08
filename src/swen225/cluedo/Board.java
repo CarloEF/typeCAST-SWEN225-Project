@@ -1,11 +1,14 @@
 package swen225.cluedo;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
+/**
+ * Class representing the board
+ * 
+ */
 public class Board {
 	Tile[][] board;
 	int width;
@@ -46,12 +49,17 @@ public class Board {
 		player.moveToRoom(newRoom);
 	}
 	
+	/**
+	 * Moves a weapon to a room
+	 * @param weapon
+	 * @param newRoom
+	 */
 	public void moveWeapon(Weapon weapon, Room newRoom) {
 		weapon.moveToRoom(newRoom);
 	}
 	
 	/**
-	 * 
+	 * Sets the board's rooms and walls from strings
 	 * @param roomText - text representing the tiles
 	 * @param wallText - bitfield text representing the walls on the tiles
 	 * @param rooms - a map containing the rooms
@@ -168,11 +176,13 @@ public class Board {
 	private void validMove(int moveNum, int diceRoll, Stack<Tile> visited, Set<Tile> validTiles, Set<Room> validRooms) {
 		Tile lastTile = visited.peek();
 		
+		//if used up all moves, current tile is a valid tile so add to set and stop
 		if (moveNum == diceRoll) {
 			validTiles.add(lastTile);
 			return;
 		}
 		
+		//see if we can go to upper tile
 		//can't go to invalid tiles or through walls
 		if (lastTile.getY() > 0 && !lastTile.hasUpWall()) {
 			Tile upperTile = getTile(lastTile.getX(), lastTile.getY()-1);
@@ -191,6 +201,7 @@ public class Board {
 			}
 		}
 		
+		//see if we can go to lower tile
 		//can't go to invalid tiles or through walls
 		if (lastTile.getY() < height-1 && !lastTile.hasDownWall()) {
 			Tile lowerTile = getTile(lastTile.getX(), lastTile.getY()+1);
@@ -208,6 +219,7 @@ public class Board {
 			}
 		}
 		
+		//see if we can go to left tile
 		//can't go to invalid tiles or through walls
 		if (lastTile.getX() > 0 && !lastTile.hasLeftWall()) {
 			Tile leftTile = getTile(lastTile.getX()-1, lastTile.getY());
@@ -225,6 +237,7 @@ public class Board {
 			}
 		}
 		
+		//see if we can go to right tile
 		//can't go to invalid tiles or through walls
 		if (lastTile.getX() < width-1 && !lastTile.hasRightWall()) {
 			Tile rightTile = getTile(lastTile.getX()+1, lastTile.getY());
